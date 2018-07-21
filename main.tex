@@ -1,171 +1,211 @@
 % -- Encoding UTF-8 without BOM
-% -- XeLaTeX => PDF (BIBER)
 
-\documentclass[english]{cv-style}     % Add 'print' as an option into the square bracket to remove colours from this template for printing. 
-                                      % Add 'espanol' as an option into the square bracket to change the date format of the Last Updated Text
-%\setdefaultlanguage{english}
-%\sethyphenation[variant=spanish]{}{}  % Add words between the {} to avoid them to be cut 
+\ProvidesClass{cv-style}[2015/02/27 CV class]
+\NeedsTeXFormat{LaTeX2e}
 
-\usepackage{graphicx}
-\usepackage{hyperref} 
-
-\begin{document}
-
-\header{Nilay }{Sharma}
-
+\DeclareOption{espanol}{\def\@cv@espanol{}}
+\DeclareOption{print}{\def\@cv@print{}}
+\DeclareOption*{%
+  \PassOptionsToClass{\CurrentOption}{article}%
+}
+\ProcessOptions\relax
+\LoadClass{article}
 
 %----------------------------------------------------------------------------------------
-% SIDEBAR SECTION  -- In the aside, each new line forces a line break
+% Colors %
 %----------------------------------------------------------------------------------------
-\begin{aside}
-\section{-}
-\includegraphics[width=4.5cm]{22}
-%
-\section{Personal Information}
-Front-end Developer
-%
-\section{contact}
-+91-7976638268
-nilaysharma642@gmail.com
-2-D-21, Housing Board Colony,
-Banswara, Rajasthan,India-327001
-%
-\section{Github}
-\href{https://github.com/sharmanilay}{https://github.com/sharmanilay}
-%
-\section{Programming Languages}
-{\color{red} $\varheartsuit$} Java, C, Assembly language
-%
-\section{Web Development}
-React JS, Bootstrap, HTML5, CSS3, JavaScript, JQuery, Meteor JS, Node JS, SQL, MongoDB.
-%
-\section{Tools Known}
-GIT,Net-Beans, Jet Brains Webstorm, Eclipse, MySQL workbench, WordPress, Adobe Auditons, Adobe After Effects, Adobe Premiere Pro
-%
-\section{Hobbies}
-Film-making,Screen-writing,Guitar,Flute,Lyrics writing,Table-Tennis.
-%
-\section{Strengths}
-Innovative and creative
-Quick Learner
-Persistence
-Dedicated and sincere
-Good leadership skills.
-%
-\end{aside}
-%----------------------------------------------------------------------------------------
-% RESUMEN SECTION
-%----------------------------------------------------------------------------------------
-\vspace{0.2cm}
-\section{Career Objective}
-  \vspace{-0.2cm}
-To work in an organization where I am a challenged regularly to improve my overall abilities and use them effectively in
-the betterment of myself and the organization.
-%----------------------------------------------------------------------------------------
-% WORK EXPERIENCE SECTION
-%----------------------------------------------------------------------------------------
-\section{Training}
-\begin{entrylist}
-%------------------------------------------------
 
-\entry
-  {\scalebox{.8}[1.0]{May'17--July'17}}
-  {Full Stack Development}
-  {}
-  {\jobtitle{Free Code Camp(Online)}\\
- 	\textbf{Received Front-end Certification}
+\RequirePackage{xcolor}
+
+\definecolor{white}{RGB}{255,255,255}
+
+\definecolor{darkgray}{HTML}{333333}
+\definecolor{gray}{HTML}{4D4D4D}
+\definecolor{lightgray}{HTML}{999999}
+
+\definecolor{blue}{HTML}{66D9EE}
+\definecolor{red}{HTML}{FA2772}
+\definecolor{orange}{HTML}{FE9720}
+\definecolor{green}{HTML}{A7E22E}
+\definecolor{purple}{HTML}{9358FE}
+\definecolor{aquamarine}{HTML}{36AF90}
+
+\definecolor{date}{HTML}{A4A4A4}
+
+\ifdefined\@cv@print
+  \colorlet{blue}{gray}
+  \colorlet{red}{gray}
+  \colorlet{orange}{gray}
+  \colorlet{green}{gray}
+  \colorlet{purple}{gray}
+  \colorlet{aquamarine}{gray}
+  \colorlet{fillheader}{white}
+  \colorlet{header}{gray}
+\else
+  \colorlet{fillheader}{gray}
+  \colorlet{header}{white}
+\fi
+\colorlet{textcolor}{gray}
+\colorlet{headercolor}{gray}
+
+%----------------------------------------------------------------------------------------
+% Fonts %
+%----------------------------------------------------------------------------------------
+
+\RequirePackage[quiet]{fontspec}
+\RequirePackage[math-style=TeX,vargreek-shape=unicode]{unicode-math}
+
+\newfontfamily\bodyfont{Roboto-Regular}[Path=fonts/]
+\newfontfamily\bodyfontit{Roboto-LightItalic}[Path=fonts/]
+\newfontfamily\thinfont{Roboto-Thin}[Path=fonts/]
+\newfontfamily\headingfont{RobotoCondensed-Bold}[Path=fonts/]
+
+\defaultfontfeatures{Mapping=tex-text}
+\setmainfont[Mapping=tex-text, Color=textcolor, Path = fonts/]{Roboto-Light}
+
+\newcommand{\italica}[1]{%
+    {\color{gray}\bodyfontit #1}%
+}
+
+%----------------------------------------------------------------------------------------
+% Header %
+%----------------------------------------------------------------------------------------
+
+\RequirePackage{tikz}
+
+\newcommand{\header}[2]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node [rectangle, fill=fillheader, anchor=north, minimum width=\paperwidth, minimum height=2cm] (box) at (current page.north){};
+    \node [anchor=center] (name) at (box) {%
+      \fontsize{40pt}{65pt}\color{header}%
+      {\thinfont #1}{\bodyfont  #2}
+    };
+  \end{tikzpicture}
+  \vspace{1cm}
+  \vspace{-2\parskip}
+}
+
+%----------------------------------------------------------------------------------------
+%	Last updated command %
+%----------------------------------------------------------------------------------------
+
+\RequirePackage[absolute,overlay]{textpos}
+\RequirePackage{polyglossia}
+
+\newcommand{\sethyphenation}[3][]{%
+  \sbox0{\begin{otherlanguage}[#1]{#2}
+    \hyphenation{#3}\end{otherlanguage}}}
+%\sethyphenation[<options>]{<language>}{<list of words separated by spaces>}
+
+\ifdefined\@cv@espanol
+  \setdefaultlanguage{spanish}
+  \def\lastupdatedtext{Última Actualización el}
+\else
+  \setdefaultlanguage[variant=british]{english}
+  \def\lastupdatedtext{Last Updated on}
+\fi
+
+\setlength{\TPHorizModule}{0.01\paperwidth}
+\setlength{\TPVertModule}{0.01\paperwidth}
+
+\newcommand{\lastupdated}{ 
+  \begin{textblock}{10}(11.3, 0.05)
+    \raggedleft
+    \fontsize{8pt}{10pt}\color{date}\thinfont 
+    \lastupdatedtext{} \today
+  \end{textblock}}
+
+%----------------------------------------------------------------------------------------
+% Structure %
+%----------------------------------------------------------------------------------------
+\RequirePackage{parskip}
+
+\newcounter{colorCounter}
+\def\@sectioncolor#1#2#3{%
+  {%
+    \color{%
+      \ifcase\value{colorCounter}%
+        blue\or%
+        red\or%
+        orange\or%
+        green\or%
+        purple\or%
+        aquamarine\else%
+        headercolor\fi%
+    } #1#2#3%
+  }%
+  \stepcounter{colorCounter}%
+}
+
+\renewcommand{\section}[1]{
+  {\par\vspace{\parskip}
+  {%
+    \LARGE\headingfont\color{headercolor}%
+    \@sectioncolor #1%
   }
-%------------------------------------------ ------
-\end{entrylist}
-\section{Projects}
-  \vspace{-0.2cm}
-  
-\begin{entrylist}
-%------------------------------------------------
+  \par\vspace{\parskip}}
+}
 
-\entry
-  {\scalebox{.8}[1.0]{Mar'18--May'18}}
-  {Electronic Consumer Products Website}
-  {}
-  {\jobtitle{HTML,CSS,JavaScript,Bootstrap}\\
- 	A web portal to display all the products manufactured by a company called Nesty.
+\renewcommand{\subsection}[2]{
+  \par\vspace{.5\parskip}%
+  \Large\headingfont\color{headercolor} #2%
+  \par\vspace{.25\parskip}%
+}
+
+\newcommand{\jobtitle}[1]{%
+    {\color{gray}\bodyfontit #1}%
+}
+
+\pagestyle{empty}
+
+%----------------------------------------------------------------------------------------
+% List environment %
+%----------------------------------------------------------------------------------------
+
+\setlength{\tabcolsep}{0pt}
+\newenvironment{entrylist}{%
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ll}
+}{%
+  \end{tabular*}
+}
+\renewcommand{\bfseries}{\headingfont\color{headercolor}}
+\newcommand{\entry}[4]{%
+  #1&\parbox[t]{11.8cm}{%
+    \textbf{#2}%
+    \hfill%
+    {\footnotesize\addfontfeature{Color=lightgray} #3}\\%
+    #4\vspace{\parsep}%
+  }\\}
+
+%----------------------------------------------------------------------------------------
+% Side block %
+%----------------------------------------------------------------------------------------
+
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+\newenvironment{aside}{%
+  \let\oldsection\section
+  \renewcommand{\section}[1]{
+    \par\vspace{\baselineskip}{\Large\headingfont\color{headercolor} ##1}
   }
-%------------------------------------------ ------
-\vspace{-0.3cm}
-\entry
-  {\scalebox{.8}[1.0]{Aug'17--Nov'17}}
-  {Food Ordering Management System}
-  {}
-  {\jobtitle{ReactJS, Meteor JS, MongoDB}\\
-  A full stack application that provides user to simulate  the functioning of a food order management system
-  \newline
-  }
-%------------------------------------------ ------
-\vspace{-0.3cm}
+  \begin{textblock}{4.6}(1, 1.87)
+  \begin{flushright}
+  \obeycr
+}{%
+  \restorecr
+  \end{flushright}
+  \end{textblock}
+  \let\section\oldsection
+}
 
-\entry
-  {\scalebox{.8}[1.0]{May'17--Jun'17}}
-  {Local Weather Detector}
-  {}
-  {\jobtitle{React JS,Open Weather API, Redux}\\
-  A web app which displays the current weather conditions on user’s location. It provides user the
-option to see the details in metric or imperial system. It provides temperature, wind speed, humidity and the
-weather at user’s location.).\\}
-%------------------------------------------ ------
-\vspace{-0.3cm}
-\entry
-  {\scalebox{.8}[1.0]{Feb'17--Apr'17}}
-  {Computer Help Desk Support Website}
-  {}
-  {\jobtitle{JAVA, JSP, MySQL, HTML, CSS}\\
-  A demo website for providing support to the customer with computer accessories. Customers
-have to sign up at the website to fire a ticket. Customer information is stored in the MySQL database.
-  \newline
-  }
-  
-%------------------------------------------------
-\end{entrylist}
 %----------------------------------------------------------------------------------------
-% EDUCATION SECTION
+% Other tweaks %
 %----------------------------------------------------------------------------------------
-\section{Education}
-  \vspace{-0.2cm}
-\begin{entrylist}
-%------------------------------------------------
-\entry
-{\scalebox{.8}[1.0]{2015--Present}}
-{B.Tech, Computer Science Engineering}
-{The LNM Insititue of Information Technology}
-{\textbf{CGPA: 6.51}\\
-\small{}}
-%------------------------------------------------
-\entry
-{\scalebox{.8}[1.0]{2014}}
-{Class 12}
-{St.Paul's Sr. Sec. School(CBSE)}
-{\textbf{Percentage: 88.88}}
-%------------------------------------------------
-\entry
-{\scalebox{.8}[1.0]{2012}}
-{Class 10}
-{St.Paul's Sr. Sec. School(CBSE)}
-{\textbf{CGPA: 9.2}}
-%------------------------------------------------
-\end{entrylist}
-%----------------------------------------------------------------------------------------
-% AWARDS SECTION
-%----------------------------------------------------------------------------------------
-\section{Extracurricular}
-  \vspace{-0.2cm}
-\begin{itemize}
-\item  Writer-Director, Rendition Dramatics Club, LNMIIT.
-\item Member of Vivacity Organizing Committee 2018.
-\item Organized a film-making contest in association with WittyFeed India.
-\item Won Best Script for a stage-play written and directed by me at LNMIIT GUSTO’16.
-\item Secured 3rd prize for a stage-play written and directed by me at Thomso’16 IIT Roorkee.
-\item Written and directed some short films which are also on YouTube.
-\end{itemize}
 
-  \vspace{-0.2cm}
-
-\end{document}
+\RequirePackage[left=6.4cm,top=1cm,right=1cm,bottom=1cm,nohead,nofoot]{geometry}
+\RequirePackage{hyperref}
+\hypersetup{
+    pdftitle=Resume \textbar{} Nilay Sharma,
+    pdfauthor=Nilay Sharma,
+    pdfsubject=Resume%
+    }
